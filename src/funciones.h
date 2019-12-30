@@ -40,7 +40,6 @@
 #include <ESP8266WiFi.h>
 #include <WEMOS_SHT3X.h>
 #include <PubSubClient.h>
-#include <EEPROM.h>
 
 //----------------------- NEWTORK PARAMETERS------------------------
 // ARAFO
