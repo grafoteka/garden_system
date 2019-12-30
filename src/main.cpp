@@ -1,3 +1,18 @@
+/********************************************************************************
+ * Jorge De León Rivas
+ * mail: jdeleonrivas@gmail.com
+ * Diciembre 2019
+ * Archivo: main.cpp
+ * 
+ * Programa que ejecuta el sistema de mediciones para un sensor ESP12-E
+ * Solo es necesario definir al inicio el nombre raíz de la base de datos y
+ * a continuación el nombre del nodo del cual colgarán todos los tópicos.
+ * 
+ * LED = ON  -> ESP12-E trabajando
+ * LED = OFF -> ESP12-E deepSleep
+ * 
+ *******************************************************************************/ 
+
 #include "funciones.h"
 
 //----------------------- CONFIG PARAMETERS------------------------
