@@ -1,3 +1,42 @@
+/***************************************************************************************
+ * Jorge De León Rivas
+ * mail:jdeleonrivas@gmail.com
+ * Diciembre 2019
+ * Archivo: funciones.h
+ * 
+ * Este archivo esta configurado para un sensor SHT30 y SHT31. 
+ * Estos sensores funcionan por I2C.
+ * D1 -> CLK
+ * D2 -> Data
+ * 
+ *  Fichero de funciones necesarias para el funcionamiento del riego
+ *
+ *  -void setup_wifi()
+ *       Función que se conecta a la red wifi indicada
+ *
+ *  -void callback (char* topic, byte* payload, unsigned int length)
+ *       Función que se suscribe a los tópicos indicados 
+ *
+ *  -void reconnect(String bName, String nName)
+ *       Función que realiza la reconexión al servidor MQTT 
+ *       y también hace la llamada al callback
+ *
+ *  -void enviar_dato(String dato, String bName, String nName, String tipoDato)
+ *       Función para publicar un mensaje en un tópico indicado
+ *
+ *  -void sht_function(String BName, String NName)
+ *       Función que hace la medición del sensor. 
+ *       Luego realiza una llamada a la publicación en el tópico indicado
+ *
+ *  -void battery_read_function(String BName, String NName)
+ *       Función que hace la medición del voltaje en el pin Vin y con la función getVcc
+ *       Luego realiza una llamada a la publicación en el tópico indicado
+ *
+ *  -void sleep_function(String bName, String nName)
+ *       Función para poner en SLEEP durante un intervalo de tiempo indicado
+ *
+ ****************************************************************************************/
+
 #include <ESP8266WiFi.h>
 #include <WEMOS_SHT3X.h>
 #include <PubSubClient.h>
@@ -5,26 +44,26 @@
 
 //----------------------- NEWTORK PARAMETERS------------------------
 // ARAFO
-//const char* ssid = "cantero_router";
-//const char* password = "Jjdeleon_56";
+const char* ssid = "cantero_router";
+const char* password = "Jjdeleon_56";
 // Valle Guerra
 //const char* ssid = "MOVISTAR_ED06";
 //const char* password = "MFaHPyfbaExE4tRC6Ctk";
 // La Laguna
-const char* ssid = "linksys";
-const char* password = "";
+//const char* ssid = "linksys";
+//const char* password = "";
 // RPI3
-//const char* mqtt_server = "192.168.1.3";
-// RPI2
 const char* mqtt_server = "192.168.1.3";
+// RPI2
+//const char* mqtt_server = "192.168.1.2";
 //-----------------------------------------------------------------
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 // Variables del mensaje
-char msg_temp[50];
-char msg_hum [50];
+//char msg_temp[50];
+//char msg_hum [50];
 
 // Declarar sensor temperatura y humedad
 SHT3X sht30(0x44);
