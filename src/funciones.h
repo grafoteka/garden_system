@@ -93,18 +93,30 @@ void setup_wifi() {
 //-----------------------------------------------------------------
 
 //----------------------- WIFI RE-CONNECTION ------------------------
-void reconnect() {
+void reconnect(String bName, String nName) {
   // Loop until we're reconnected
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
     if (client.connect("ESP8266Client")) {
       Serial.println("connected");
+      delay(1000);
       // Once connected, publish an announcement...
-      client.publish("arboles/naranjo/info", "Conectado");
+      String TopicMQTT = bName + "/" + nName;
+      String payload = "";
+      TopicMQTT += "/info";
+      payload += "Conectado";
+      //client.publish("arboles/melocotonero/info", "Conectado");
+      client.publish((char*) TopicMQTT.c_str(), (char*) payload.c_str());
       // ... and resubscribe
       //client.subscribe("arboles/configuracion/rate");
-      client.subscribe("arboles/configuracion/rate");
+      if(client.subscribe("arboles/configuracion/rate"))
+      {
+        Serial.println("Subscribed to arboles/configuracion/rate");  
+      } else {
+      Serial.println("Failed to subscribe to arboles/configuracion/rate");    
+      }
+      
       //client.subscribe("despacho/luz");
     } else {
       Serial.print("failed, rc=");
@@ -190,4 +202,39 @@ void battery_read_function(String BName, String NName)
     char bateria_voltaje_str[6];
     dtostrf(bateria_voltaje_actual,  4, 2, bateria_voltaje_str);
     enviar_dato(bateria_voltaje_str, BName, NName, "Bateria");
+}
+
+void sleep_function(String bName, String nName)
+{
+  /* LIGHT SLEEP */
+  //WiFi.disconnect(); // DO NOT DISCONNECT WIFI IF YOU WANT TO LOWER YOUR POWER DURING LIGHT_SLEEP_T DELLAY !
+  //Serial.println(WiFi.status());  
+  Serial.println("Go to sleep");
+  /*client.publish("arboles/melocotonero/info", "Estado deep-sleep");
+  digitalWrite(LED_BUILTIN, HIGH);
+  wifi_set_sleep_type(LIGHT_SLEEP_T);
+  delay(6000-800); // loop every 3 minutes
+  */
+  Serial.println("INFO: Closing the Wifi connection");
+  WiFi.disconnect();
+  while (client.connected() || (WiFi.status() == WL_CONNECTED))
+  {
+    Serial.println("Waiting for shutdown before sleeping");
+    delay(10);
+  }
+  delay(10);  
+  //ESP.deepSleep(5e6, WAKE_RF_DEFAULT);
+  Serial.print("Voy a dormir "); Serial.print(rate/(6e7)); Serial.println(" minutos");
+  //client.publish("arboles/melocotonero/info", "Voy dormir");
+  //Creamos el topic. Sera del estilo: "BName/NName/TipoDato"
+  String TopicMQTT = bName + "/" + nName + "/info";
+  //Creamos el mensaje. Sera del estilo: "NName TipoDato=";
+  String payload; //Variable para contener la info de la trama que se envia.
+  payload = "Voy a dormir"; //Limpiamos la variable.
+  client.publish((char*) TopicMQTT.c_str(), (char*) payload.c_str());
+  ESP.deepSleep(rate, WAKE_RF_DEFAULT);
+  //delay(500); // wait for deep sleep to happen
+
+  /* DEEP SLEEP */
+  //ESP.deepSleep(9e8);
 }
