@@ -95,6 +95,7 @@ void setup_wifi() {
 //----------------------- WIFI RE-CONNECTION ------------------------
 void reconnect(String bName, String nName) {
   // Loop until we're reconnected
+  int reconnect_try = 0;
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
@@ -119,11 +120,17 @@ void reconnect(String bName, String nName) {
       
       //client.subscribe("despacho/luz");
     } else {
+      reconnect_try++;
       Serial.print("failed, rc=");
       Serial.print(client.state());
       Serial.println(" try again in 5 seconds");
       // Wait 5 seconds before retrying
       delay(5000);
+      if(reconnect_try == 5)
+      {
+        // Dormir durante una hora
+        ESP.deepSleep(3.6e9, WAKE_RF_DEFAULT);
+      }
     }
   }
 }
